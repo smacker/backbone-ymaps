@@ -1,4 +1,4 @@
-(function() {
+(function(_, Backbone) {
 
     Backbone.Ymaps = {};
 
@@ -52,7 +52,6 @@
             });
         });
     }
-
 
     var BaseClass = function(options) {
         options || (options = {});
@@ -116,7 +115,7 @@
         undelegateEvents: function() {
             BaseClass.prototype.undelegateEvents.apply(this, arguments);
             unbindEvents(this, this.model, this.modelEvents, backboneUnbinding);
-            unbindEvents(this, this.geoObject, this.events, ymapsBinding);
+            unbindEvents(this, this.geoObject, this.events, ymapsUnbinding);
         },
 
         modelEvents: {
@@ -190,8 +189,11 @@
 
             BaseClass.prototype.constructor.apply(this, arguments);
 
-            this.children = new Backbone.ChildViewContainer();
+            this.modelsCache = {};
             this.geoObject = new ymaps.GeoObjectCollection();
+            if (this.collection.length) {
+                this.resetItems(this.collection);
+            }
         },
 
         delegateEvents: function() {
@@ -214,32 +216,30 @@
             'reset': 'resetItems'
         },
 
-        _removeChildItem: function(item) {
-            item.undelegateEvents();
-            this.children.remove(item);
-        },
-
         addItem: function(model, collection, options) {
             var item = new this.geoItem({
                 model: model,
                 map: this.map
             });
 
-            this.children.add(item);
+            this.modelsCache[model.cid] = item;
             this.geoObject.add(item.geoObject);
         },
 
         removeItem: function(model, collection, options) {
-            var item = this.children.findByModel(model);
-            this._removeChildItem(item);
-            this.geoObject.remove(item.geoObject);
+            var item = this.modelsCache[model.cid];
+            if (item) {
+                item.undelegateEvents && item.undelegateEvents();
+                this.geoObject.remove(item.geoObject);
+                delete this.modelsCache[model.cid];
+            }
         },
 
         resetItems: function(collection, options) {
-            this.children.each(function(item) {
-                this._removeChildItem(item);
-            }, this);
-
+            _.each(this.modelsCache, function(item, cid) {
+                item.undelegateEvents && item.undelegateEvents();
+            });
+            this.modelsCache = {};
             this.geoObject.removeAll();
 
             collection.each(function(item, index) {
@@ -252,4 +252,4 @@
         }
     });
 
-})();
+})(_, Backbone);
