@@ -172,6 +172,7 @@
 
         render: function() {
             this.map.geoObjects.add(this.geoObject);
+            return this;
         },
 
         destroy: function() {
@@ -179,7 +180,7 @@
         }
     });
 
-    Backbone.Ymaps.Collection = BaseClass.extend({
+    Backbone.Ymaps.CollectionView = BaseClass.extend({
         constructor: function(options) {
             this.collection = options.collection || this.collection;
             this.geoItem = options.geoItem || this.geoItem;
@@ -216,6 +217,14 @@
             'reset': 'resetItems'
         },
 
+        _removeAllItems: function() {
+            _.each(this.modelsCache, function(item, cid) {
+                item.undelegateEvents && item.undelegateEvents();
+            });
+            this.modelsCache = {};
+            this.geoObject.removeAll();
+        },
+
         addItem: function(model, collection, options) {
             var item = new this.geoItem({
                 model: model,
@@ -236,11 +245,7 @@
         },
 
         resetItems: function(collection, options) {
-            _.each(this.modelsCache, function(item, cid) {
-                item.undelegateEvents && item.undelegateEvents();
-            });
-            this.modelsCache = {};
-            this.geoObject.removeAll();
+            this._removeAllItems();
 
             collection.each(function(item, index) {
                 this.addItem(item, collection, options);
@@ -249,6 +254,12 @@
 
         render: function() {
             this.map.geoObjects.add(this.geoObject);
+            return this;
+        },
+
+        destroy: function() {
+            this._removeAllItems();
+            this.map.geoObjects.remove(this.geoObject);
         }
     });
 
