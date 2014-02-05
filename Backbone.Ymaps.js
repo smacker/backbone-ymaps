@@ -77,7 +77,7 @@
         },
 
         undelegateEvents: function() {
-            unbindEvents(this, this.map, this.mapEvents, ymapsBinding);
+            unbindEvents(this, this.map, this.mapEvents, ymapsUnbinding);
         },
 
         initialize: function() {
@@ -188,13 +188,13 @@
             // Ensure collection
             if (!this.collection) throw new Error("A collection must be specified for a YmapsCollection");
 
-            BaseClass.prototype.constructor.apply(this, arguments);
-
             this.modelsCache = {};
             this.geoObject = new ymaps.GeoObjectCollection();
             if (this.collection.length) {
                 this.resetItems(this.collection);
             }
+
+            BaseClass.prototype.constructor.apply(this, arguments);
         },
 
         delegateEvents: function() {
@@ -206,7 +206,7 @@
         undelegateEvents: function() {
             BaseClass.prototype.undelegateEvents.apply(this, arguments);
             unbindEvents(this, this.collection, this.collectionEvents, backboneUnbinding);
-            unbindEvents(this, this.geoObject, this.events, ymapsBinding);
+            unbindEvents(this, this.geoObject, this.events, ymapsUnbinding);
         },
 
         geoItem: Backbone.Ymaps.Placemark,
