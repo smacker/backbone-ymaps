@@ -192,11 +192,12 @@
             this.modelsCache = {};
             this.geoObject = new ymaps.GeoObjectCollection();
             this.geoObject.collection = this.collection;
+
+            BaseClass.prototype.constructor.apply(this, arguments);
+
             if (this.collection.length) {
                 this.resetItems(this.collection);
             }
-
-            BaseClass.prototype.constructor.apply(this, arguments);
         },
 
         delegateEvents: function() {
