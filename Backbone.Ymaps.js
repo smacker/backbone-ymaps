@@ -102,6 +102,7 @@
                 placemarkOptions = this.placemarkOptions || {};
 
             this.geoObject = new ymaps.Placemark(geometry, properties, placemarkOptions);
+            this.geoObject.model = this.model;
 
             BaseClass.prototype.constructor.apply(this, arguments);
         },
@@ -190,6 +191,7 @@
 
             this.modelsCache = {};
             this.geoObject = new ymaps.GeoObjectCollection();
+            this.geoObject.collection = this.collection;
             if (this.collection.length) {
                 this.resetItems(this.collection);
             }
