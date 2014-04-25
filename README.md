@@ -32,15 +32,17 @@ var placesView = new Backbone.Ymaps.CollectionView({
 placesView.render();
 ```
 
-Интерактивный пример:
+Интерактивный пример: [открыть](http://smacker.github.io/backbone-ymaps/example.html)
+
+Так же его можно открыть локально:
 
 ```bash
-git co https://github.com/smacker/backbone-ymaps.git
+git clone https://github.com/smacker/backbone-ymaps.git
 cd backbone-ymaps
 python -m SimpleHTTPServer
 ```
 
-Открыть в браузере http://127.0.0.1:8000
+Открыть в браузере http://127.0.0.1:8000/example.html
 
 ## Components
 
