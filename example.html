@@ -1,0 +1,198 @@
+<html>
+<head>
+    <title>Backbone.Ymaps Example</title>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/default.min.css">
+    <style type="text/css">
+        .col {
+            float: left;
+            width: 50%;
+        }
+        #maps {
+            height: 400px;
+            margin-right: 10px;
+        }
+        #addPoint {
+            margin-top: 20px; margin-left:40px;
+        }
+        pre {
+            margin: 0;
+        }
+    </style>
+    <script src="//api-maps.yandex.ru/2.0/?load=package.standard,package.geoObjects,package.route,package.editor&lang=ru-RU&coordorder=longlat"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+    <script src="//rawgit.com/smacker/backbone-ymaps/master/Backbone.Ymaps.js"></script>
+
+    <script type="text/template" id="pointTemplate">
+        <strong><%= title %>:</strong>
+        lat: <input type="text" name="lat" value="<%= lat %>" style="width:130px;">
+        lon: <input type="text" name="lon" value="<%= lon %>" style="width:130px;">
+        <button name="apply">Apply</button>
+        <button name="remove">Remove</button>
+    </script>
+
+    <script id="source">
+    // Wait until yandex maps loaded
+    ymaps.ready(function() {
+        // Create map
+        var maps = new ymaps.Map('maps', {
+            center: [37.64, 55.76],
+            zoom: 12,
+            behaviors: ['default', 'scrollZoom']
+        });
+
+        maps.controls.add('zoomControl');
+        maps.controls.add('scaleLine');
+        maps.controls.add('mapTools');
+
+        // First point
+        var initPoint = {
+            title: 'point',
+            lat: 55.76000,
+            lon: 37.64000
+        };
+
+        // Create random point
+        var addPoint = function() {
+            var model,
+                sign = function() {
+                    return Math.random() > 0.4 ? 1 : -1;
+                };
+
+            model = new Backbone.Model($.extend({}, initPoint, {
+                lat: initPoint.lat + sign() * Math.random() / 50,
+                lon: initPoint.lon + sign() * Math.random() / 50
+            }));
+
+            return model;
+        }
+
+        // Customize placemark
+        var Placemark = Backbone.Ymaps.Placemark.extend({
+            placemarkOptions: {
+                draggable: true
+            },
+
+            initialize: function() {
+                var colors = Object.keys(this.styles),
+                    idx = _.random(0, colors.length);
+                
+                this.setStyle(colors[idx]);
+            },
+
+            hintContent: 'Click on me!',
+
+            balloonContent: function() {
+                return [
+                    'Hi!',
+                    'I\'m',
+                    this.model.get('title') + '.',
+                    'My coordinates: ',
+                    this.model.get('lat'),
+                    ',',
+                    this.model.get('lon')
+                ].join(' ');
+            },
+
+            iconContent: function() {
+                return this.model.cid.slice(1);
+            }
+        });
+
+        // Backbone Views for list
+        var ItemView = Backbone.View.extend({
+            template: _.template($('#pointTemplate').html()),
+            tagName: 'li',
+
+            events: {
+                'click button[name=apply]': 'apply',
+                'click button[name=remove]': 'remove'
+            },
+
+            initialize: function() {
+                this.listenTo(this.model, 'change', this.render, this);
+            },
+
+            render: function() {
+                this.$el.html(this.template(this.model.toJSON()));
+                return this;
+            },
+
+            apply: function() {
+                this.model.set({
+                    lat: parseFloat(this.$('input[name="lat"]').val()),
+                    lon: parseFloat(this.$('input[name="lon"]').val()),
+                });
+            },
+
+            remove: function() {
+                this.model.destroy();
+            }
+        });
+
+        var View = Backbone.View.extend({
+            el: '#list',
+
+            initialize: function() {
+                this.listenTo(this.collection, 'change add remove', this.render, this);
+            },
+
+            render: function() {
+                this.$el.empty();
+                this.collection.each(function(model) {
+                    var child = new ItemView({
+                        model: model
+                    });
+                    this.$el.append(child.render().el);
+                }, this);
+
+                return this;
+            }
+        });
+
+        // Collection of points
+        var collection = new Backbone.Collection([initPoint]);
+
+        // Collection of points on map
+        var mapPoints = new Backbone.Ymaps.CollectionView({
+            geoItem: Placemark,
+            collection: collection,
+            map: maps
+        });
+
+        // Collection of points in list
+        var listPoints = new View({
+            collection: collection
+        });
+
+        mapPoints.render();
+        listPoints.render();
+
+        // Button callback
+        $('#addPoint').click(function() {
+            collection.add(addPoint())
+        });
+
+        // Show this code on in right column
+        $('#code').text($('#source').html());
+        hljs.highlightBlock($('#code')[0])
+    });
+    </script>
+</head>
+<body>
+    <div class="col">
+        <h1>Backbone.Ymaps Simple Example</h1>
+        <div id="maps"></div>
+        <div>
+            <button id="addPoint">Add point</button>
+            Try to move point and change location in list.
+            <ul id="list"></div>
+        </div>
+    </div>
+    <div class="col">
+        <pre id="code"></pre>
+    </div>
+</body>
+</html>
