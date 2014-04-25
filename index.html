@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Backbone-ymaps : Backbone Yandex Maps Adapter" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Backbone-ymaps</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/smacker/backbone-ymaps">View on GitHub</a>
+
+          <h1 id="project_title">Backbone-ymaps</h1>
+          <h2 id="project_tagline">Backbone Yandex Maps Adapter</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/smacker/backbone-ymaps/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/smacker/backbone-ymaps/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="backboneymaps" class="anchor" href="#backboneymaps"><span class="octicon octicon-link"></span></a>Backbone.Ymaps</h1>
+
+<p>Backbone JS расширение для работы с Yandex Maps API (v2.0).</p>
+
+<h2>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<p>Простой пример:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="c1">// Create Yandex Map</span>
+<span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ymaps</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="s1">'maps'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">center</span><span class="o">:</span> <span class="p">[</span><span class="mf">37.64</span><span class="p">,</span> <span class="mf">55.76</span><span class="p">],</span>
+    <span class="nx">zoom</span><span class="o">:</span> <span class="mi">12</span>
+<span class="p">});</span>
+
+<span class="c1">// Create collection</span>
+<span class="kd">var</span> <span class="nx">places</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">([{</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s1">'Place one'</span><span class="p">,</span>
+    <span class="nx">lat</span><span class="o">:</span> <span class="mf">55.768</span><span class="p">,</span>
+    <span class="nx">lon</span><span class="o">:</span> <span class="mf">37.646</span>
+<span class="p">},</span> <span class="p">{</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s1">'Place Two'</span><span class="p">,</span>
+    <span class="nx">lat</span><span class="o">:</span> <span class="mf">55.761</span><span class="p">,</span>
+    <span class="nx">lon</span><span class="o">:</span> <span class="mf">37.642</span>
+<span class="p">}]);</span>
+
+<span class="c1">// Render places</span>
+<span class="kd">var</span> <span class="nx">placesView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Ymaps</span><span class="p">.</span><span class="nx">CollectionView</span><span class="p">({</span>
+    <span class="nx">collection</span><span class="o">:</span> <span class="nx">places</span><span class="p">,</span>
+    <span class="nx">map</span><span class="o">:</span> <span class="nx">map</span>
+<span class="p">});</span>
+<span class="nx">placesView</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+</pre></div>
+
+<p>Интерактивный пример:</p>
+
+<div class="highlight highlight-bash"><pre>git co https://github.com/smacker/backbone-ymaps.git
+<span class="nb">cd </span>backbone-ymaps
+python -m SimpleHTTPServer
+</pre></div>
+
+<p>Открыть в браузере <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a></p>
+
+<h2>
+<a name="components" class="anchor" href="#components"><span class="octicon octicon-link"></span></a>Components</h2>
+
+<ul>
+<li>Backbone.Ymaps.Placemark</li>
+<li>Backbone.Ymaps.CollectionView</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Backbone-ymaps maintained by <a href="https://github.com/smacker">smacker</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
