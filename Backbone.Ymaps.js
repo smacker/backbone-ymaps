@@ -181,6 +181,118 @@
         }
     });
 
+    Backbone.Ymaps.Polyline = BaseClass.extend({
+        constructor: function(options) {
+            this.model = options.model || this.model;
+
+            // Ensure model
+            if (!this.model) throw new Error("A model must be specified for a YmapsPolyline");
+
+            var geometry = this.getCoordinates(),
+                polylineOptions = this.polylineOptions || {};
+
+
+            this.geoObject = new ymaps.Polyline(geometry, {}, polylineOptions);
+            this.geoObject.model = this.model;
+
+            BaseClass.prototype.constructor.apply(this, arguments);
+        },
+
+        delegateEvents: function() {
+            BaseClass.prototype.delegateEvents.apply(this, arguments);
+            bindEvents(this, this.model, this.modelEvents, backboneBinding);
+            bindEvents(this, this.geoObject, this.events, ymapsBinding);
+        },
+
+        undelegateEvents: function() {
+            BaseClass.prototype.undelegateEvents.apply(this, arguments);
+            unbindEvents(this, this.model, this.modelEvents, backboneUnbinding);
+            unbindEvents(this, this.geoObject, this.events, ymapsUnbinding);
+        },
+
+        modelEvents: {
+            'change:placemarks': 'updatePolylineCoordinates',
+            'change:readonly': 'setEditingMode'
+        },
+
+        events: {
+            'geometrychange': 'updateModelCoordinates'
+        },
+
+        updatePolylineCoordinates: function() {
+            var newCoordinates = this.getCoordinates();
+
+            if (newCoordinates && _.isArray(newCoordinates)) {
+                this.geoObject.geometry.setCoordinates(newCoordinates);
+            }
+        },
+
+        setEditingMode: function() {
+            var editable = !this.model.get('readonly');
+            if (editable)
+                this.startEditing();
+            else
+                this.stopEditing();
+        },
+
+        updateModelCoordinates: function() {
+            var oldCoordinates = this.getCoordinates(),
+                newCoordinates = this.geoObject.geometry.getCoordinates();
+
+            // loop
+            if (_.isEqual(oldCoordinates, newCoordinates)) {
+                return;
+            }
+
+            this.setCoordinates(newCoordinates);
+        },
+
+        startEditing: function() {
+            this.geoObject.editor.startEditing();
+        },
+
+        stopEditing: function() {
+            this.geoObject.editor.stopEditing();
+        },
+
+        // Public API
+        getCoordinates: function() {
+            var placemarks = this.model.get('placemarks') || [];
+            return _.map(placemarks, function(placemark) {
+                return [placemark.lon, placemark.lat]
+            });
+        },
+
+        setCoordinates: function(coordinates) {
+            var placemarks = _.map(coordinates || [], function(placemarkCoordinates) {
+               return {
+                   lon: placemarkCoordinates[0],
+                   lat: placemarkCoordinates[1]
+               };
+            });
+            this.model.set({
+                'placemarks': placemarks
+            });
+        },
+
+        setLineColor: function(color) {
+            this.geoObject.options.set('strokeColor', color);
+        },
+
+        setLineWidth: function(width) {
+            this.geoObject.options.set('strokeWidth', width);
+        },
+
+        render: function() {
+            this.map.geoObjects.add(this.geoObject);
+            return this;
+        },
+
+        destroy: function() {
+            this.map.geoObjects.remove(this.geoObject);
+        }
+    });
+
     Backbone.Ymaps.CollectionView = BaseClass.extend({
         constructor: function(options) {
             this.collection = options.collection || this.collection;
