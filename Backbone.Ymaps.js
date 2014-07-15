@@ -211,8 +211,7 @@
         },
 
         modelEvents: {
-            'change:placemarks': 'updatePolylineCoordinates',
-            'change:readonly': 'setEditingMode'
+            'change:placemarks': 'updatePolylineCoordinates'
         },
 
         events: {
@@ -225,14 +224,6 @@
             if (newCoordinates && _.isArray(newCoordinates)) {
                 this.geoObject.geometry.setCoordinates(newCoordinates);
             }
-        },
-
-        setEditingMode: function() {
-            var editable = !this.model.get('readonly');
-            if (editable)
-                this.startEditing();
-            else
-                this.stopEditing();
         },
 
         updateModelCoordinates: function() {
