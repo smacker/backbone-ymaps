@@ -42,7 +42,7 @@ cd backbone-ymaps
 python -m SimpleHTTPServer
 ```
 
-Открыть в браузере http://127.0.0.1:8000/samples/placemark.html, http://127.0.0.1:8000/samples/popyline.html
+Открыть в браузере http://127.0.0.1:8000/samples/placemark.html, http://127.0.0.1:8000/samples/polyline.html
 
 ## Components
 

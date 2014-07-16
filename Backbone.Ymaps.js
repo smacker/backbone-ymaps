@@ -211,7 +211,7 @@
         },
 
         modelEvents: {
-            'change:placemarks': 'updatePolylineCoordinates'
+            'change:points': 'updatePolylineCoordinates'
         },
 
         events: {
@@ -248,21 +248,21 @@
 
         // Public API
         getCoordinates: function() {
-            var placemarks = this.model.get('placemarks') || [];
-            return _.map(placemarks, function(placemark) {
-                return [placemark.lon, placemark.lat]
+            var points = this.model.get('points') || [];
+            return _.map(points, function(point) {
+                return [point.lon, point.lat]
             });
         },
 
         setCoordinates: function(coordinates) {
-            var placemarks = _.map(coordinates || [], function(placemarkCoordinates) {
+            var points = _.map(coordinates || [], function(pointCoordinates) {
                return {
-                   lon: placemarkCoordinates[0],
-                   lat: placemarkCoordinates[1]
+                   lon: pointCoordinates[0],
+                   lat: pointCoordinates[1]
                };
             });
             this.model.set({
-                'placemarks': placemarks
+                'points': points
             });
         },
 
