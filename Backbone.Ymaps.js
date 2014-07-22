@@ -236,6 +236,7 @@
             }
 
             this.setCoordinates(newCoordinates);
+            this.trigger('pointschange');
         },
 
         startEditing: function() {
