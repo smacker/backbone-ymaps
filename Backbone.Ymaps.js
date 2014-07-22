@@ -332,6 +332,10 @@
             this.geoObject.removeAll();
         },
 
+        getItem: function(model) {
+            return this.modelsCache[model.cid];
+        },
+
         addItem: function(model, collection, options) {
             var item = new this.geoItem({
                 model: model,
