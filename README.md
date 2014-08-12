@@ -32,9 +32,9 @@ var placesView = new Backbone.Ymaps.CollectionView({
 placesView.render();
 ```
 
-Интерактивный пример: [открыть](http://smacker.github.io/backbone-ymaps/example.html)
+Интерактивные примеры: [Placemark](http://smacker.github.io/backbone-ymaps/samples/placemark.html) [Polyline](http://smacker.github.io/backbone-ymaps/samples/polyline.html)
 
-Так же его можно открыть локально:
+Так же их можно открыть локально:
 
 ```bash
 git clone https://github.com/smacker/backbone-ymaps.git
@@ -42,9 +42,10 @@ cd backbone-ymaps
 python -m SimpleHTTPServer
 ```
 
-Открыть в браузере http://127.0.0.1:8000/example.html
+Открыть в браузере http://127.0.0.1:8000/samples/placemark.html, http://127.0.0.1:8000/samples/polyline.html
 
 ## Components
 
 - Backbone.Ymaps.Placemark
+- Backbone.Ymaps.Polyline
 - Backbone.Ymaps.CollectionView
