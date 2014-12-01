@@ -285,6 +285,78 @@
         }
     });
 
+    Backbone.Ymaps.Polygon = BaseClass.extend({
+        constructor: function(options) {
+            this.model = options.model || this.model;
+
+            // Ensure model
+            if (!this.model) throw new Error("A model must be specified for a YmapsPolygon");
+
+            var geometry = this.getCoordinates(),
+                properties = {
+                    hintContent: _.result(this, 'hintContent'),
+                    balloonContent: _.result(this, 'balloonContent')
+                },
+                polygonOptions = this.polygonOptions || {};
+
+            this.geoObject = new ymaps.Polygon(geometry, properties, polygonOptions);
+            this.geoObject.model = this.model;
+
+            BaseClass.prototype.constructor.apply(this, arguments);
+        },
+
+        delegateEvents: function() {
+            BaseClass.prototype.delegateEvents.apply(this, arguments);
+            bindEvents(this, this.model, this.modelEvents, backboneBinding);
+            bindEvents(this, this.geoObject, this.events, ymapsBinding);
+        },
+
+        undelegateEvents: function() {
+            BaseClass.prototype.undelegateEvents.apply(this, arguments);
+            unbindEvents(this, this.model, this.modelEvents, backboneUnbinding);
+            unbindEvents(this, this.geoObject, this.events, ymapsUnbinding);
+        },
+
+        modelEvents: {
+            'change:exterior': 'updatePolylineCoordinates',
+            'change:interiors': 'updatePolylineCoordinates'
+        },
+
+        updatePolylineCoordinates: function() {
+            var newCoordinates = this.getCoordinates();
+
+            if (newCoordinates && _.isArray(newCoordinates)) {
+                this.geoObject.geometry.setCoordinates(newCoordinates);
+            }
+        },
+
+        // Public API
+        getCoordinates: function() {
+            return [this.model.get('exterior') || [], this.model.get('interiors') || []];
+        },
+
+        setFillColor: function(color) {
+            this.geoObject.options.set('fillColor', color);
+        },
+
+        setStrokeColor: function(color) {
+            this.geoObject.options.set('strokeColor', color);
+        },
+
+        setStrokeWidth: function(width) {
+            this.geoObject.options.set('strokeWidth', width);
+        },
+
+        render: function() {
+            this.map.geoObjects.add(this.geoObject);
+            return this;
+        },
+
+        destroy: function() {
+            this.map.geoObjects.remove(this.geoObject);
+        }
+    });
+
     Backbone.Ymaps.CollectionView = BaseClass.extend({
         constructor: function(options) {
             this.collection = options.collection || this.collection;
