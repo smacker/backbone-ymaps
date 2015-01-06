@@ -64,6 +64,7 @@
 
         // Set attributes
         this.map = options.map || this.map;
+        this.parent = options.parent;
         this.initialize.apply(this, arguments);
         this.delegateEvents();
     };
@@ -407,7 +408,8 @@
         addItem: function(model, collection, options) {
             var item = new this.geoItem({
                 model: model,
-                map: this.map
+                map: this.map,
+                parent: this
             });
 
             this.modelsCache[model.cid] = item;
